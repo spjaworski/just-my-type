@@ -4,24 +4,22 @@ $(document).ready(function () {
 
     $("#keyboard-upper-container").hide();
 
-    $(document).on("keydown", upperShift);
-
-    if (event.which = 16) {
-        function upperShift() {
-
+    $(document).keydown(function (e) {
+        console.log(event.keyCode);
+        if (e.keyCode == 16) {
             $("#keyboard-upper-container").show();
             $("#keyboard-lower-container").hide();
         }
-    }
-
-    $(document).on("keyup", lowerShift);
-
-    if (event.which = 16) {
-        function lowerShift() {
+    })
+    
+    $(document).keyup(function (e) {
+        console.log(event.keyCode);
+        if (e.keyCode == 16) {
             $("#keyboard-upper-container").hide();
             $("#keyboard-lower-container").show();
         }
-    }
+    })
+            
 
     $(document).keypress(function(){
         console.log(event.keyCode);
