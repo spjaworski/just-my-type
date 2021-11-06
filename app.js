@@ -40,8 +40,25 @@ $(document).ready(function () {
 
     var errorCount = 0;
 
+    let neededLet = inputArray[positionNum]
 
+
+    $('#target-letter').text(inputArray[positionNum]);
+
+    var move = 12;
+    var wordCount = 0;
+    var minutes = 0;
     $(document).on('keypress', function (e) {
+
+        setInterval(startTimer, 60000);
+        function startTimer(){
+            minutes += 1;
+        }
+
+        move += 17
+        $('#yellow-block').css({
+            left: move
+        })
         var pressedKey = event.keyCode;
         var convertedKey = String.fromCharCode(pressedKey)
         $('#' + pressedKey).css("background-color", "yellow")
@@ -50,7 +67,7 @@ $(document).ready(function () {
         }, 200);
         console.log(convertedKey);
         let neededLet = inputArray[positionNum]
-        
+
 
         $('#target-letter').text(inputArray[positionNum + 1]);
 
@@ -58,6 +75,12 @@ $(document).ready(function () {
             console.log("ok");
             $('#feedback').append('<span class="glyphicon-ok"></span>')
             positionNum += 1;
+
+        } else if (neededLet == convertedKey && pressedKey == 32) {
+            console.log("ok");
+            $('#feedback').append('<span class="glyphicon-ok"></span>')
+            positionNum += 1;
+            wordCount += 1;
         } else {
             console.log("nope");
             $('#feedback').append('<span class="glyphicon-remove"></span>')
@@ -67,6 +90,9 @@ $(document).ready(function () {
         console.log(positionNum);
 
         console.log(inputArray);
+        if (positionNum == inputArray.length - 1) {
+            move = 12;
+        }
         if (positionNum == inputArray.length) {
             positionNum = 0;
             if (sentNum < sentences.length - 1) {
@@ -80,12 +106,42 @@ $(document).ready(function () {
                     charSpan.className = 'requestedText';
                     $('#sentence').append(charSpan)
                 })
-                
+
                 inputArray = sentenceText.split("");
 
 
             } else if (sentNum >= sentences.length - 1) {
-                sentNum = 0;
+                $('#sentence').empty();
+                $('#feedback').empty();
+                var wpm = wordCount/minutes - 2 * errorCount
+                $('#sentence').text("Game over! Your words per minute: " + wpm)
+                playBtn = document.createElement('button')
+                $('button').text("Play again?");
+                $('button').onclick(resetGame);
+                $('feedback').append(playBtn);
+                function resetGame() {
+                      sentNum = 0;
+                      $('#sentence').empty();
+                      sentenceText.split("").forEach(char => {
+                        const charSpan = document.createElement('span')
+                        charSpan.innerText = char;
+                        charSpan.className = 'requestedText';
+                        $('#sentence').append(charSpan)
+                    })
+                      $('#feedback').empty();
+                      move = 12;
+                      positionNum = 0;
+                      errorCount = 0;
+                      wordCount = 0;
+                      minutes = 0;
+                }
+
+
+                
+
+
+
+
             }
         }
 
