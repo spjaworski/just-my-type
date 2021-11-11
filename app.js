@@ -22,18 +22,21 @@ $(document).ready(function () {
         }
     })
 
+    
 
     var sentNum = 0;
 
-
     var sentenceText = sentences[sentNum]
 
+    var charNum = 0;
 
     sentenceText.split("").forEach(char => {
         const charSpan = document.createElement('span')
         charSpan.innerText = char;
+        charSpan.id = ('splitSpan' + charNum)
         charSpan.className = 'requestedText';
         $('#sentence').append(charSpan)
+        charNum += 1;
     })
 
     inputArray = sentenceText.split("");
@@ -42,19 +45,23 @@ $(document).ready(function () {
 
     let neededLet = inputArray[positionNum]
 
+    
 
     $('#target-letter').text(inputArray[positionNum]);
 
-    var move = 12;
-    var wordCount = 0;
-    var minutes = 0;
-    $(document).on('keypress', function (e) {
-
-        setInterval(startTimer, 60000);
+    setInterval(startTimer, 60000);
         function startTimer(){
             minutes += 1;
         }
 
+    var move = 12;
+    var wordCount = 0;
+    var minutes = 0;
+
+    $(document).on('keypress', function (e) {
+
+        
+        console.log(sentNum)
         move += 17
         $('#yellow-block').css({
             left: move
@@ -67,6 +74,9 @@ $(document).ready(function () {
         }, 200);
         console.log(convertedKey);
         let neededLet = inputArray[positionNum]
+
+        //$('#splitSpan' + positionNum).css('background-color', 'yellow')
+       // $('#splitSpan' + positionNum-1).css('background-color', '"#f5f5f5')
 
 
         $('#target-letter').text(inputArray[positionNum + 1]);
@@ -95,10 +105,11 @@ $(document).ready(function () {
         }
         if (positionNum == inputArray.length) {
             positionNum = 0;
-            if (sentNum < sentences.length - 1) {
+            sentNum++;
+            if (sentNum < sentences.length) {
                 $('#sentence').empty();
                 $('#feedback').empty();
-                sentNum++;
+                
                 var sentenceText = sentences[sentNum]
                 sentenceText.split("").forEach(char => {
                     const charSpan = document.createElement('span')
@@ -108,44 +119,60 @@ $(document).ready(function () {
                 })
 
                 inputArray = sentenceText.split("");
+                $('#target-letter').text(inputArray[positionNum]);
 
-
-            } else if (sentNum >= sentences.length - 1) {
-                $('#sentence').empty();
-                $('#feedback').empty();
-                var wpm = wordCount/minutes - 2 * errorCount
-                $('#sentence').text("Game over! Your words per minute: " + wpm)
-                playBtn = document.createElement('button')
-                $('button').text("Play again?");
-                $('button').onclick(resetGame);
-                $('feedback').append(playBtn);
-                function resetGame() {
-                      sentNum = 0;
-                      $('#sentence').empty();
-                      sentenceText.split("").forEach(char => {
-                        const charSpan = document.createElement('span')
-                        charSpan.innerText = char;
-                        charSpan.className = 'requestedText';
-                        $('#sentence').append(charSpan)
-                    })
-                      $('#feedback').empty();
-                      move = 12;
-                      positionNum = 0;
-                      errorCount = 0;
-                      wordCount = 0;
-                      minutes = 0;
-                }
-
-
-                
-
-
-
-
-            }
+            } 
+            
         }
 
+        if (sentNum >= sentences.length) {
+            $('#sentence').empty();
+            $('#feedback').empty();
+            $('#target-letter').text("");
+            $('#yellow-block').css('background-color', 'white');
+            neededLet = "";
+            if ( minutes == 0) {
+                minutes = 1
+            }
+            var wpm = 54/minutes - 2 * errorCount
+            $('#sentence').text("Game over! Your words per minute: " + wpm)
+            
+            const playBtn = document.createElement('button')
+            let playBtnText = document.createTextNode("Play again?");
+            playBtn.id = 'resetBtn';
+            playBtn.appendChild(playBtnText);
+            $('#target-letter').append(playBtn);
+            $('#resetBtn').click(function() {
+            
+                console.log("reset");
+                sentNum = 0;
+                var sentenceText = sentences[sentNum]
+                $('#sentence').empty();
+                sentenceText.split("").forEach(char => {
+                  const charSpan = document.createElement('span')
+                  charSpan.innerText = char;
+                  charSpan.className = 'requestedText';
+                  $('#sentence').append(charSpan)
+              })
+              inputArray = sentenceText.split("");
+              let neededLet = inputArray[positionNum]
+                $('#feedback').empty();
+                move = 12;
+                positionNum = 0;
+                errorCount = 0;
+                wordCount = 0;
+                minutes = 0;
+                
+                $('#yellow-block').css('background-color', 'yellow')
+                $(this).remove();
+                $('#target-letter').text(inputArray[positionNum]);
+            })
+        }
     })
 
+    
+ 
+    
 
 })
+
